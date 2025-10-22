@@ -16,19 +16,26 @@ data "azurerm_subnet" "storage_container_subnet" {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 resource azurerm_storage_account "example" { 
-  name = "mfstorageacc${count.index}"
+  name = "${var.name}${count.index}"
   location = data.azurerm_resource_group.existing.location
   resource_group_name = data.azurerm_resource_group.existing.name
 
-  account_tier  = "Standard"
+  account_tier  = var.storage_tier
+
   # account_replication_type = var.replication_type
-  account_replication_type = "LRS"
+  account_replication_type = var.replication_type
 
   network_rules {
-    default_action = "Deny"
+    default_action = var.default_action
     virtual_network_subnet_ids = [data.azurerm_subnet.storage_container_subnet.id]
   }
 
-  count = 2
+  count = var.sc_count
 
 }
+
+variable "storage_tier" {}
+variable "replication_type" {}
+variable "name" {}
+variable "default_action" {}
+variable "sc_count" {}
