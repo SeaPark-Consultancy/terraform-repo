@@ -27,22 +27,22 @@ resource "azurerm_mssql_database" "example" {
   }
 }
 
-# resource "azurerm_private_endpoint" "adf_private_endpoint" {
-#   name = "pe-${azurerm_mssql_database.example.name}-${var.environment}"
-#   location = data.azurerm_resource_group.existing.location
-#   resource_group_name = data.azurerm_resource_group.existing.name
-#   subnet_id = var.subnet_id
+resource "azurerm_private_endpoint" "adf_private_endpoint" {
+  name = "pe-${azurerm_mssql_database.example.name}-${var.environment}"
+  location = data.azurerm_resource_group.existing.location
+  resource_group_name = data.azurerm_resource_group.existing.name
+  subnet_id = var.subnet_id
 
-#   private_service_connection {
-#     name = "psc-${azurerm_mssql_database.example.name}-${var.environment}"
-#     private_connection_resource_id = azurerm_mssql_database.example.id
-#     is_manual_connection = false
-#     subresource_names = ["example"]
-#   }
+  private_service_connection {
+    name = "psc-${azurerm_mssql_database.example.name}-${var.environment}"
+    private_connection_resource_id = azurerm_mssql_server.example.id
+    is_manual_connection = false
+    subresource_names = ["sqlServer"]
+  }
 
-#   ip_configuration {
-#     name = "ip-config-${azurerm_mssql_database.example.name}-${var.environment}"
-#     private_ip_address = var.ip_address
-#     subresource_name = "example"
-# }
-# }
+  ip_configuration {
+    name = "ip-config-${azurerm_mssql_database.example.name}-${var.environment}"
+    private_ip_address = var.ip_address
+    subresource_name = "sqlServer"
+  }
+}
