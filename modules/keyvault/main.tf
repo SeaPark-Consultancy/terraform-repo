@@ -25,7 +25,7 @@ resource "azurerm_key_vault" "keyvault" {
 }
 
 resource "azurerm_private_endpoint" "keyvault_private_endpoint" {
-  #count              = var.enable_private_endpoint ? 1 : 0
+  count              = var.enable_private_endpoint ? 1 : 0
   name                = "pe-${azurerm_key_vault.keyvault.name}-${var.environment}"
   location            = data.azurerm_resource_group.existing.location
   resource_group_name = data.azurerm_resource_group.existing.name
@@ -45,4 +45,5 @@ resource "azurerm_private_endpoint" "keyvault_private_endpoint" {
     subresource_name   = "vault"
   }
 }
+
 
