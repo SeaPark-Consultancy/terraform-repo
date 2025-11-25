@@ -32,10 +32,10 @@ variable "sku_name" {
 #   default = {}
 # }
 
-# variable "enable_private_endpoint" {
-#   default = false
-#   type    = bool
-# }
+variable "enable_private_endpoint" {
+   default = false
+   type    = bool
+ }
 
 variable "subnet_id" {
   type    = string
@@ -45,4 +45,5 @@ variable "subnet_id" {
 variable "ip_address" {
   type    = string
   default = null
+
 }
