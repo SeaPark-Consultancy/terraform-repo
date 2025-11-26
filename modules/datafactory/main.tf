@@ -16,6 +16,11 @@ resource azurerm_data_factory "datafactory" {
 
 }
 
+resource "azurerm_data_factory_integration_runtime_self_hosted" "SHIR" {
+  name            = "adfdmu-dataplatform-shir-001"
+  data_factory_id = azurerm_data_factory.datafactory.id
+}
+
 
 resource "azurerm_private_endpoint" "adf_private_endpoint" {
   name = "pe-${azurerm_data_factory.datafactory.name}-${var.environment}"
@@ -36,4 +41,5 @@ resource "azurerm_private_endpoint" "adf_private_endpoint" {
     subresource_name = "dataFactory"
   }
 }
+
 
