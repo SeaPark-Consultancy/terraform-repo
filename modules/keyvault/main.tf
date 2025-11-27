@@ -13,8 +13,8 @@ resource "azurerm_key_vault" "keyvault" {
   purge_protection_enabled = true
 
   # RBAC ISSUES # 
-  rbac_authorization_enabled = true
-  #enable_rbac_authorization = true
+  #rbac_authorization_enabled = true
+  enable_rbac_authorization = true
 
   network_acls {
     default_action = "Allow"
@@ -48,5 +48,6 @@ resource "azurerm_private_endpoint" "keyvault_private_endpoint" {
     subresource_name   = "vault"
   }
 }
+
 
 
