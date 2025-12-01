@@ -90,4 +90,14 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_vnet_link" {
   virtual_network_id    = var.existing_vnet != null ? data.azurerm_virtual_network.existing_vnet[0].id : resource.azurerm_virtual_network.sp_vnet[0].id
 }
 
+//Vnet Peering 
+resource "azurerm_virtual_network_peering" "dmu-to-main" {
+  name = "to-vnet-connectivity-hub-prod-uksouth-01"
+  resource_group_name = data.azurerm_resource_group.existing.name
+  virtual_network_name = azurerm_virtual_network.sp_vnet[0].name
+  remote_virtual_network_id = data.azurerm_virtual_network.peering_vnet.id
+}
+
+
+
 
