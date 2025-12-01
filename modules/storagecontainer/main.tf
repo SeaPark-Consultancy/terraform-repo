@@ -27,7 +27,7 @@ resource "azurerm_storage_account" "sa" {
   }
 
   blob_properties {
-    versioning_enabled  = true
+    # versioning_enabled  = true
     change_feed_enabled = true
   }
 }
@@ -71,5 +71,6 @@ resource "azurerm_private_dns_a_record" "sadns" {
   ttl                 = 3600
   records             = [each.value.ip_address]
 }
+
 
 
