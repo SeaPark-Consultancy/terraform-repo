@@ -1,4 +1,6 @@
 variable "resource_group_name" { type = string }
+variable "subscription_1" { type = string }
+variable "subscription_2" { type = string }
 
 variable "environment" {
   type    = string
@@ -68,3 +70,4 @@ variable "vnet_address_space" {
   type        = string
   description = "The address space for the virtual network."
 }
+
