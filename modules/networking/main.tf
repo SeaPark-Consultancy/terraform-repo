@@ -9,6 +9,11 @@ data "azurerm_virtual_network" "existing_vnet" {
   resource_group_name = data.azurerm_resource_group.existing.name
 }
 
+data "azurerm_virtual_network" "peering_vnet" {
+  name                = "vnet-connectivity-hub-prod-uksouth-01"
+  resource_group_name = data.azurerm_resource_group.existing.name
+}
+
 //Create VNET
 resource "azurerm_virtual_network" "sp_vnet" {
 
@@ -97,6 +102,7 @@ resource "azurerm_virtual_network_peering" "dmu-to-main" {
   virtual_network_name = azurerm_virtual_network.sp_vnet[0].name
   remote_virtual_network_id = data.azurerm_virtual_network.peering_vnet.id
 }
+
 
 
 
