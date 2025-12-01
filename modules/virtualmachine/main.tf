@@ -10,6 +10,7 @@ resource "azurerm_network_interface" "vm_nic" {
   ip_configuration {
     name                          = "ip-config-${var.vm_name}-${var.environment}"
     subnet_id                     = var.subnet_id
+    public_ip_address_id          = var.public_ip_address_id
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -37,3 +38,4 @@ resource "azurerm_windows_virtual_machine" "vm" {
 }
 
   
+
