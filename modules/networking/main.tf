@@ -11,11 +11,13 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "existing" {
+  provider = azurerm.shared_services
   name = var.resource_group_name # Name of the RG you created manually
 }
 
 //check of the virtual network already exists
 data "azurerm_virtual_network" "existing_vnet" {
+  provider = azurerm.dmu
   count               = var.existing_vnet != null ? 1 : 0
   name                = var.existing_vnet.name
   resource_group_name = data.azurerm_resource_group.existing.name
@@ -109,11 +111,22 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_vnet_link" {
 
 //Vnet Peering 
 resource "azurerm_virtual_network_peering" "dmu-to-main" {
+  provider = azurerm.dmu
   name = "to-vnet-connectivity-hub-prod-uksouth-01"
   resource_group_name = data.azurerm_resource_group.existing.name
   virtual_network_name = azurerm_virtual_network.sp_vnet[0].name
   remote_virtual_network_id = data.azurerm_virtual_network.peering_vnet.id
 }
+
+resource "azurerm_virtual_network_peering" "main-to-dmu" {
+  provider = azurerm.shared_services
+  name = "from-vnet-dataplatform-${var.environment}"
+  resource_group_name = data.azurerm_resource_group.existing.name
+  virtual_network_name = data.azurerm_virtual_network.peering_vnet.name
+  remote_virtual_network_id = azurerm_virtual_network.sp_vnet[0].id
+}
+
+
 
 
 
