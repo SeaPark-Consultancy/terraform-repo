@@ -11,7 +11,6 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "existing" {
-  provider = azurerm.shared_services
   name = var.resource_group_name # Name of the RG you created manually
 }
 
@@ -24,13 +23,14 @@ data "azurerm_virtual_network" "existing_vnet" {
 }
 
 data "azurerm_virtual_network" "peering_vnet" {
+  provider = azurerm.shared_services
   name                = "vnet-connectivity-hub-prod-uksouth-01"
   resource_group_name = "rg-connectivity-shared-uksouth-01"
 }
 
 //Create VNET
 resource "azurerm_virtual_network" "sp_vnet" {
-
+  provider = azurerm.dmu
   count               = var.existing_vnet == null ? 1 : 0
   resource_group_name = data.azurerm_resource_group.existing.name
 
@@ -44,6 +44,7 @@ resource "azurerm_virtual_network" "sp_vnet" {
 
 //Create Subnets 
 resource "azurerm_subnet" "subnet" {
+  provider = azurerm.dmu
   for_each             = var.subnet_config
   name                 = "snet-dataplatform-${var.environment}-${each.key}"
   resource_group_name  = var.resource_group_name
@@ -65,6 +66,7 @@ resource "azurerm_subnet" "subnet" {
 
 //Create NSGs
 resource "azurerm_network_security_group" "nsg" {
+  provider = azurerm.dmu
   for_each            = var.nsg_config
   tags                = var.tag
   name                = "sp-nsg-${each.key}"
@@ -88,6 +90,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_association" {
+  provider = azurerm.dmu
   for_each                  = var.nsg_config
   subnet_id                 = azurerm_subnet.subnet[each.value.associate_with].id
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
@@ -96,12 +99,14 @@ resource "azurerm_subnet_network_security_group_association" "subnet_nsg_associa
 
 //Create DNS Zones
 resource "azurerm_private_dns_zone" "dns_zone" {
+  provider = azurerm.dmu
   for_each            = var.dns_zones
   name                = each.value
   resource_group_name = data.azurerm_resource_group.existing.name
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_vnet_link" {
+  provider = azurerm.dmu
   for_each              = azurerm_private_dns_zone.dns_zone
   name                  = "dnszonelink-${each.value.name}"
   resource_group_name   = data.azurerm_resource_group.existing.name
@@ -129,6 +134,7 @@ resource "azurerm_virtual_network_peering" "main-to-dmu" {
   allow_forwarded_traffic = true
   use_remote_gateways = false
 }
+
 
 
 
