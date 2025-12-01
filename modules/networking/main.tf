@@ -1,3 +1,14 @@
+# provider "azurerm" {
+#   alias = "dmu"
+#   subscription_id = var.subscription_1
+#   features {}
+# }
+
+# provider "azurerm" {
+#   alias = "shared_services"
+#   subscription_id = var.subscription_2
+#   features {}
+# }
 
 data "azurerm_resource_group" "existing" {
   name = var.resource_group_name # Name of the RG you created manually
@@ -5,14 +16,21 @@ data "azurerm_resource_group" "existing" {
 
 //check of the virtual network already exists
 data "azurerm_virtual_network" "existing_vnet" {
+  provider = azurerm.dmu
   count               = var.existing_vnet != null ? 1 : 0
   name                = var.existing_vnet.name
   resource_group_name = data.azurerm_resource_group.existing.name
 }
 
+# data "azurerm_virtual_network" "peering_vnet" {
+#   provider = azurerm.shared_services
+#   name                = "vnet-connectivity-hub-prod-uksouth-01"
+#   resource_group_name = data.azurerm_resource_group.existing.name
+# }
 
 //Create VNET
 resource "azurerm_virtual_network" "sp_vnet" {
+  #provider            = azurerm.dmu
   count               = var.existing_vnet == null ? 1 : 0
   resource_group_name = data.azurerm_resource_group.existing.name
 
@@ -26,6 +44,7 @@ resource "azurerm_virtual_network" "sp_vnet" {
 
 //Create Subnets 
 resource "azurerm_subnet" "subnet" {
+  #provider            = azurerm.dmu
   for_each             = var.subnet_config
   name                 = "snet-dataplatform-${var.environment}-${each.key}"
   resource_group_name  = var.resource_group_name
@@ -47,6 +66,7 @@ resource "azurerm_subnet" "subnet" {
 
 //Create NSGs
 resource "azurerm_network_security_group" "nsg" {
+ #provider            = azurerm.dmu
   for_each            = var.nsg_config
   tags                = var.tag
   name                = "sp-nsg-${each.key}"
@@ -70,6 +90,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_association" {
+  #provider                 = azurerm.dmu
   for_each                  = var.nsg_config
   subnet_id                 = azurerm_subnet.subnet[each.value.associate_with].id
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
@@ -78,18 +99,40 @@ resource "azurerm_subnet_network_security_group_association" "subnet_nsg_associa
 
 //Create DNS Zones
 resource "azurerm_private_dns_zone" "dns_zone" {
+  # provider          = azurerm.dmu
   for_each            = var.dns_zones
   name                = each.value
   resource_group_name = data.azurerm_resource_group.existing.name
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_vnet_link" {
+  #provider             = azurerm.dmu
   for_each              = azurerm_private_dns_zone.dns_zone
   name                  = "dnszonelink-${each.value.name}"
   resource_group_name   = data.azurerm_resource_group.existing.name
   private_dns_zone_name = each.value.name
   virtual_network_id    = var.existing_vnet != null ? data.azurerm_virtual_network.existing_vnet[0].id : resource.azurerm_virtual_network.sp_vnet[0].id
 }
+
+# resource "azurerm_virtual_network_peering" "dmu-to-main" {
+#   provider = azurerm.dmu
+#   name = "to-vnet-connectivity-hub-prod-uksouth-01"
+#   resource_group_name = data.azurerm_resource_group.existing.name
+#   virtual_network_name = azurerm_virtual_network.sp_vnet[0].name
+#   remote_virtual_network_id = data.azurerm_virtual_network.peering_vnet.id
+#   allow_forwarded_traffic = true
+#   use_remote_gateways = false
+# }
+
+# resource "azurerm_virtual_network_peering" "main-to-dmu" {
+#   provider = azurerm.shared_services
+#   name = "from-vnet-dataplatform-${var.environment}"
+#   resource_group_name = data.azurerm_resource_group.existing.name
+#   virtual_network_name = data.azurerm_virtual_network.peering_vnet.name
+#   remote_virtual_network_id = azurerm_virtual_network.sp_vnet[0].id
+#   allow_forwarded_traffic = true
+#   use_remote_gateways = false
+# }
 
 
 
