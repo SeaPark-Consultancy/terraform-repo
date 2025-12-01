@@ -23,6 +23,7 @@ resource "azurerm_windows_virtual_machine" "vm" {
   size                  = var.vm_size
   admin_username        = var.vm_adminuser
   admin_password        = var.vm_adminpassword
+  vm_agent_platform_updates_enabled =  true
 
   os_disk {
     caching              = "ReadWrite"
@@ -38,4 +39,5 @@ resource "azurerm_windows_virtual_machine" "vm" {
 }
 
   
+
 
