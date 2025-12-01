@@ -28,6 +28,24 @@ variable "ip_address" {
   type        = string
 }
 
+variable "tenant_id" {
+  description = "The Azure Tenant ID."
+  type        = string
+}
+
+variable "account_name" {
+  description = "The name of the Azure DevOps account."
+  type        = string
+}
+variable "project_name" {
+  description = "The name of the Azure DevOps project."
+  type        = string
+}
+variable "repository_name" {
+  description = "The name of the Azure DevOps repository."
+  type        = string
+}
+
 ////////////////////////////////////////////////////////////////////////////
 //other variables that might be useful 
 
@@ -53,3 +71,4 @@ variable "ip_address" {
 #     linked-storage-accounts = set(string)
 #   })
 # }
+
