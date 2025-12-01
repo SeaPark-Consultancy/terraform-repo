@@ -14,6 +14,18 @@ resource "azurerm_data_factory" "datafactory" {
     type = "SystemAssigned"
   }
 
+   vsts_configuration {
+    
+      account_name = var.account_name
+      branch_name = "main"
+      project_name = var.project_name
+      repository_name = var.repository_name
+      root_folder = "/"
+      tenant_id = var.tenant_id
+    }
+  
+  
+
 }
 
 resource "azurerm_data_factory_integration_runtime_self_hosted" "SHIR" {
@@ -42,6 +54,7 @@ resource "azurerm_private_endpoint" "adf_private_endpoint" {
     subresource_name   = "dataFactory"
   }
 }
+
 
 
 
