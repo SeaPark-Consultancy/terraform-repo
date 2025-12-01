@@ -1,3 +1,15 @@
+provider "azurerm" {
+  alias = "dmu"
+  subscription_id = var.subscription_1
+  features {}
+}
+
+provider "azurerm" {
+  alias = "shared_services"
+  subscription_id = var.subscription_2
+  features {}
+}
+
 data "azurerm_resource_group" "existing" {
   name = var.resource_group_name # Name of the RG you created manually
 }
@@ -102,6 +114,7 @@ resource "azurerm_virtual_network_peering" "dmu-to-main" {
   virtual_network_name = azurerm_virtual_network.sp_vnet[0].name
   remote_virtual_network_id = data.azurerm_virtual_network.peering_vnet.id
 }
+
 
 
 
