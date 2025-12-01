@@ -16,7 +16,7 @@ data "azurerm_resource_group" "existing" {
 
 //check of the virtual network already exists
 data "azurerm_virtual_network" "existing_vnet" {
-  provider = azurerm.dmu
+  #provider           = azurerm.dmu
   count               = var.existing_vnet != null ? 1 : 0
   name                = var.existing_vnet.name
   resource_group_name = data.azurerm_resource_group.existing.name
@@ -133,6 +133,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_vnet_link" {
 #   allow_forwarded_traffic = true
 #   use_remote_gateways = false
 # }
+
 
 
 
