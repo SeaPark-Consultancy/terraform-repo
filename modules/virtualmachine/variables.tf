@@ -35,4 +35,10 @@ variable "vm_adminpassword" {
   type        = string
   sensitive   = true
   default     = "P@ssw0rd1234!"
+
+}
+variable "public_ip_address_id" {
+  description = "The ID of the public IP address to associate with the VM's network interface."
+  type        = string
+  default     = null
 }
