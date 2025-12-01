@@ -20,7 +20,7 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type = var.sa_config.replication_type
 
   #public_network_access_enabled = false
-  #is_hns_enabled = true
+  is_hns_enabled = true
 
   network_rules {
     default_action = "Allow"
@@ -71,4 +71,5 @@ resource "azurerm_private_dns_a_record" "sadns" {
   ttl                 = 3600
   records             = [each.value.ip_address]
 }
+
 
