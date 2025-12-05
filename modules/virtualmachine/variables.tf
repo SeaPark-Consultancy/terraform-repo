@@ -28,13 +28,11 @@ variable "vm_size" {
 variable "vm_adminuser" {
   description = "The admin username for the virtual machine."
   type        = string
-  default     = "adminuser"
 }
 variable "vm_adminpassword" {
   description = "The admin password for the virtual machine."
   type        = string
   sensitive   = true
-  default     = "P@ssw0rd1234!"
 
 }
 variable "public_ip_address_id" {
@@ -42,3 +40,4 @@ variable "public_ip_address_id" {
   type        = string
   default     = null
 }
+
